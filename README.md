@@ -50,3 +50,6 @@ model.introduce_decay(3.6E-3)
 model.introduce_exit(C, 0.058)
 model.introduce_exit(E, 0.029)
 ```
+
+
+## Example 3: Covid 19 Simulation 
