@@ -19,7 +19,7 @@ B.connect(C, 1)
 
 model = Model(A, B, C)
 
-model.run(10, 2000) #t_total, # de pontos
+model.run(10, 2000) # args-> total time to be simulated , number of points to be acquired
 model.plot()
 ```
 
