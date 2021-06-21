@@ -3,7 +3,7 @@
 Create and simulate any biokinetic model.
 
 
-## Example 1:
+## Example 1: A->B->C
 
 Create a compartment using `Compartimento(initial_quantity, name = "untitled")`. Connect compartments using `A.connect(B, decay_rate)`.
 
