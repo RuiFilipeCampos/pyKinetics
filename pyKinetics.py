@@ -8,7 +8,8 @@ Created on Sat Dec 12 15:02:47 2020
 """
 VERS 0.0.4 - ainda nao esta disponivel no repositorio pyPI
 """
-
+from numpy import *
+from matplotlib.pyplot import *
 
 class Compartimento:
     def __init__(self, initial_condition, name = "NaN"):
