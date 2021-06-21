@@ -5,7 +5,7 @@ Create and simulate any biokinetic model.
 
 ## Example 1:
 
-Create a compartment using `Compartimento(initial_quantity, name = "untitled")`. Connect compartments using `A.connect(B, decay_rate)` 
+Create a compartment using `Compartimento(initial_quantity, name = "untitled")`. Connect compartments using `A.connect(B, decay_rate)`.
 
 ```python
 from pyKinetics import *
