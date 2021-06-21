@@ -5,17 +5,19 @@ Created on Sat Dec 12 15:02:47 2020
 @author: Rui Campos
 """
 
+"""
+VERS 0.0.4 - ainda nao esta disponivel no repositorio pyPI
+"""
 
-
-from numpy import *
-from matplotlib.pyplot import *
 
 class Compartimento:
     def __init__(self, initial_condition, name = "NaN"):
         """
-        Argumentos:
-            initial_condition :: valor inicial do compartimento
-            name = "NaN"      :: nome do compartimento (usado para o label do plot)
+        Argumentos
+            initial_condition
+                valor inicial do compartimento
+            name = "NaN"
+                nome do compartimento (usado para o label do plot)
         """
         
         self.simulated = False
@@ -31,7 +33,7 @@ class Compartimento:
         self.into  = []
         self.out   = []
     
-    @property
+    
     def Y(self):
         return self.y
     
@@ -49,12 +51,25 @@ class Compartimento:
         ----------------------------
         """
         
+        
+        
+        
         if direction == +1:
-            self.into += [(other, constant)]
+            if callable(constant): 
+                constant_into = constant
+            else: 
+                constant_into = lambda : constant
+                
+            self.into += [(other, constant_into)]
             
             
         if direction == -1:
-            self.out += [(self, -1*constant)]
+            if callable(constant) : 
+                constant_outo = lambda : -1*constant()
+            else: 
+                constant_outo = lambda : -1*constant
+
+            self.out += [(self, constant_outo)]
             other.connect(self, constant,  direction = 1)
 
     def dydt(self, k):
@@ -62,11 +77,11 @@ class Compartimento:
         
         for connection in self.into:
             comp, rate = connection
-            dYdT += rate*(comp.y + k)
+            dYdT += rate()*(comp.y + k)
         
         for connection in self.out:
             comp, rate = connection
-            dYdT += (comp.y + k)*rate
+            dYdT += (comp.y + k)*rate()
         return dYdT
     
     def _getChange(self, dt):
@@ -103,6 +118,83 @@ class Model:
         USAGE
             Model(A, B, C, ...) onde {A, B, C, ...} são compartimentos.
         """
+        self.entities = args
+        self.simulated = False
+        
+    def __iter__(self):
+        yield from self.entities
+    
+    def reset(self):
+        self.simulated = False
+        for comp in self:
+            comp.reset()
+    
+    def introduce_decay(self, rate):
+        """
+        Introduz uma "saída" em todos os compartimentos. Com o mesmo rate.
+        """
+        
+        decay = Compartimento(0, name="decay")
+        for entity in self.entities:
+            entity.connect(decay, rate)
+        
+    def introduce_exit(self, exit_point, rate):
+        """
+        Introduzir saída num compartimento específico.
+        """
+        
+        exit = Compartimento(0, name = "exit")
+        exit_point.connect(exit, rate)
+        
+        
+    def run(self, tf, N):
+        """
+        Correr simulação.
+        PARÂMETROS
+            tf :: tempo final - simulação corre entre 0 e tf
+            N  :: número de pontos
+        """
+        
+        if self.simulated is True:
+            raise RuntimeError("Simulação já foi feita.")
+        
+        dt = tf/N
+        
+        changes = [0]*len(self.entities)
+    
+        for _ in range(N):
+            for i, comp in enumerate(self):
+                changes[i] = comp._getChange(dt)
+    
+            for i, comp in enumerate(self):
+                comp._change_state(changes[i], dt)
+    
+        self.simulated = True
+        
+        for comp in self:
+            comp.simulated = True
+                
+    def plot(self, size = (10, 10)):
+        """
+        Gráfico da simulação.
+        """
+        
+        if self.simulated is False:
+            raise RuntimeError("Simulação ainda não foi feita.")
+        
+        fig = figure(figsize = size)
+        for comp in self.entities:
+            comp.plot()
+            legend()
+            
+            
+            
+class Model:
+    """
+    USAGE
+        model = Model(A, B, C, ...) onde A, B, C, ... são objetos da classe Compartimento
+    """
+    def __init__(self, *args):
         self.entities = args
         self.simulated = False
         
