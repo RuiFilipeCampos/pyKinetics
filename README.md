@@ -23,4 +23,4 @@ model.run(10, 2000) # args-> total time to be simulated , number of points to be
 model.plot()
 ```
 
-![alt text](http://url/to/img.png)
+![alt text](https://imgur.com/a/4ZomWr4)
