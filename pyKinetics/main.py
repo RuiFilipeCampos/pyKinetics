@@ -199,14 +199,15 @@ class Model:
         entity.connect(exit, rate)
         
     @lock
-    def run(self, tf, N):
+    def run(self, time = 10, Np = 1000):
         """
         Correr simulação.
         PARÂMETROS
             tf :: tempo final - simulação corre entre 0 e tf
             N  :: número de pontos
         """
-        
+        tf = time
+        N = Np
         if self.simulated is True:
             raise RuntimeError("Simulação já foi feita.")
         
@@ -237,7 +238,8 @@ class Model:
         for comp in self.entities:
             comp.plot()
             legend()
-
+        xlabel("Time (A.U.)")
+        ylabel("Ammount of stuff in entity (A.U.)")
         title(self.name)
         show()
 
