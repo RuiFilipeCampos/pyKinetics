@@ -67,3 +67,4 @@ excretory_system.plot()
 
 
 ## Example 3: Covid 19 Simulation 
+![model_NK_covid](https://user-images.githubusercontent.com/63464503/128604273-25feab06-10f2-4b20-a26f-529b298d2e5b.png)
