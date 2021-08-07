@@ -26,8 +26,7 @@ model.run(time = 10, Np = 1000)
 model.plot()
 ```
 
-![ABCmodel](https://user-images.githubusercontent.com/63464503/128603547-cea700e3-00f6-4c6f-9b8b-5c22629b7ca6.png)
-
+<img align="middle" alt="ABCmodel" src = "https://user-images.githubusercontent.com/63464503/128603547-cea700e3-00f6-4c6f-9b8b-5c22629b7ca6.png" width = "688"> 
 
 ## Example 2: Radiation 
 
