@@ -11,7 +11,7 @@ VERS 0.0.4 - ainda nao esta disponivel no repositorio pyPI
 from numpy import *
 from matplotlib.pyplot import *
 
-class Compartimento:
+class Entity:
     def __init__(self, initial_condition, name = "NaN"):
         """
         Argumentos
@@ -44,6 +44,27 @@ class Compartimento:
         self.yAxis = [self.initial_condition]
         self.tAxis = [self.t]
     
+
+    def __rshift__(self, other):
+        """
+        Connects instance to other, and returns itself.
+        >>> A >> B
+        A
+        
+
+        """
+        self.connect(other)
+        return other
+
+    def __lshift__(self, other):
+        """
+        
+        >>> A << B
+        B
+        """
+        other.connect(self)
+        return self
+
     def connect(self, other, constant, direction = -1):
         """
         Conecta dois compartimentos.
@@ -111,93 +132,40 @@ class Compartimento:
         
         plt.plot(self.tAxis, self.yAxis, label=self.name)
         
-        
-        
-class Model:
-    def __init__(self, *args):
-        """
-        USAGE
-            Model(A, B, C, ...) onde {A, B, C, ...} são compartimentos.
-        """
-        self.entities = args
-        self.simulated = False
-        
-    def __iter__(self):
-        yield from self.entities
     
-    def reset(self):
-        self.simulated = False
-        for comp in self:
-            comp.reset()
-    
-    def introduce_decay(self, rate):
-        """
-        Introduz uma "saída" em todos os compartimentos. Com o mesmo rate.
-        """
+
+
+def lock(func):
+    def new_method(*args, **kwargs):
         
-        decay = Compartimento(0, name="decay")
-        for entity in self.entities:
-            entity.connect(decay, rate)
-        
-    def introduce_exit(self, exit_point, rate):
-        """
-        Introduzir saída num compartimento específico.
-        """
-        
-        exit = Compartimento(0, name = "exit")
-        exit_point.connect(exit, rate)
-        
-        
-    def run(self, tf, N):
-        """
-        Correr simulação.
-        PARÂMETROS
-            tf :: tempo final - simulação corre entre 0 e tf
-            N  :: número de pontos
-        """
-        
-        if self.simulated is True:
-            raise RuntimeError("Simulação já foi feita.")
-        
-        dt = tf/N
-        
-        changes = [0]*len(self.entities)
-    
-        for _ in range(N):
-            for i, comp in enumerate(self):
-                changes[i] = comp._getChange(dt)
-    
-            for i, comp in enumerate(self):
-                comp._change_state(changes[i], dt)
-    
-        self.simulated = True
-        
-        for comp in self:
-            comp.simulated = True
-                
-    def plot(self, size = (10, 10)):
-        """
-        Gráfico da simulação.
-        """
-        
-        if self.simulated is False:
-            raise RuntimeError("Simulação ainda não foi feita.")
-        
-        fig = figure(figsize = size)
-        for comp in self.entities:
-            comp.plot()
-            legend()
-            
-            
+        self = args[0]
+        if self.simulated:
+            raise RuntimeError("> Cannot do that! Simulation has been ran. (use `.reset` method")
+
+        return func(*args, **kwargs)
+    return new_method
             
 class Model:
-    """
+    """Instances of `Model` represent the model you have created.
+    These instances will manage the simulation.
+    
     USAGE
-        model = Model(A, B, C, ...) onde A, B, C, ... são objetos da classe Compartimento
+    >>> A = Entity(1); B = Entity(0);
+    >>> A.connect(B)
+    >>> model = Model(A, B) # use as many as you like, Model(A, B, C, ...)
+    >>> model.run(10, 1000)
+
     """
-    def __init__(self, *args):
+    def __init__(self, *args, name = "Untitled Model"):
+        """Initialize `Model` instance.
+
+        >>> model = Model(A, B, C, D, ..., name = "My Model!")
+        """
+
         self.entities = args
         self.simulated = False
+        self.name = name
+        self.exits = []
         
     def __iter__(self):
         yield from self.entities
@@ -207,24 +175,27 @@ class Model:
         for comp in self:
             comp.reset()
     
+
+    @lock
     def introduce_decay(self, rate):
-        """
-        Introduz uma "saída" em todos os compartimentos. Com o mesmo rate.
+        """Introduces a decay on all entities.
         """
         
-        decay = Compartimento(0, name="decay")
+        decay = Entity(0, name="decay")
         for entity in self.entities:
             entity.connect(decay, rate)
-        
-    def introduce_exit(self, exit_point, rate):
+    
+    @lock
+    def introduce_exit(self, entity, rate):
+        """Connects `entity` to an exit compartment.
         """
-        Introduzir saída num compartimento específico.
-        """
         
-        exit = Compartimento(0, name = "exit")
-        exit_point.connect(exit, rate)
+        exit = Entity(0, name = f"Exit #{len(self.exits)+1}")
+        self.exits.append(exit)
+
+        entity.connect(exit, rate)
         
-        
+    @lock
     def run(self, tf, N):
         """
         Correr simulação.
@@ -251,16 +222,17 @@ class Model:
         
         for comp in self:
             comp.simulated = True
-                
+              
     def plot(self, size = (10, 10)):
-        """
-        Gráfico da simulação.
+        """Plot the result of the simulation.
         """
         
-        if self.simulated is False:
-            raise RuntimeError("Simulação ainda não foi feita.")
-        
+        if not self.simulated:
+            raise RuntimeError("> No data. Please run the simulation first.")
+
         fig = figure(figsize = size)
         for comp in self.entities:
             comp.plot()
             legend()
+
+        title(self.name)

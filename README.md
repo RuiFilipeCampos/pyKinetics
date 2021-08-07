@@ -2,6 +2,10 @@
 
 Create and simulate any biokinetic model.
 
+```
+pip install pyKinetics
+```
+
 
 ## Example 1: A->B->C
 
