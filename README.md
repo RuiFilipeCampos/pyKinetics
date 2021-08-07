@@ -13,16 +13,27 @@ Note: these examples work on the code in this repo, the distribution in pypi is 
 ```python
 from pyKinetics import *
 
-A = Entity(1, name="A")
-B = Entity(0, name="B")
-C = Entity(0, name="C")
+A = Entity(250, name="Blood")
+B = Entity(0, name="Thyroid")
+C = Entity(0, name="Rest of Body")
+D = Entity(0, name="Bladder")
+E = Entity(0, name="Large Intestine")
 
-A.connect(B, 1)
-B.connect(C, 1)
+A.connect(B, 0.035)
+A.connect(C, 0.08)
 
-model = Model(A, B, C, name = "ABC model")
+B.connect(D, 3.61E-4)
+D.connect(E, 4.81E-4)
+D.connect(A, 1.93E-3)
 
-model.run(time = 10, Np = 1000)
+model = Model(A, B, C, D, E, name = "Radio-isotope model")
+
+#model.introduce_decay(3.6E-3)
+model.introduce_decay(3.6E-3)
+model.introduce_exit(C, 0.058)
+model.introduce_exit(E, 0.029)
+
+model.run(200)
 model.plot()
 ```
 
