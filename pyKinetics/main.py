@@ -12,7 +12,7 @@ from numpy import *
 from matplotlib.pyplot import *
 
 class Entity:
-    def __init__(self, initial_condition, name = "NaN"):
+    def __init__(self, initial_condition, name = "Untitled"):
         """
         Argumentos
             initial_condition
@@ -34,6 +34,9 @@ class Entity:
         self.into  = []
         self.out   = []
     
+    def __repr__(self):
+        sim = "simulated" if self.simulated else "not simulated" 
+        return f"<Entity({sim}): {self.name}; Initial Value: {self.initial_condition}>"
     
     def Y(self):
         return self.y
@@ -236,3 +239,19 @@ class Model:
             legend()
 
         title(self.name)
+        show()
+
+    def create_figure(self, size = (10, 10)):
+        """Creates matplotlib figure and returns it.
+        """
+        
+        if not self.simulated:
+            raise RuntimeError("> No data. Please run the simulation first.")
+
+        fig = figure(figsize = size)
+        for comp in self.entities:
+            comp.plot()
+            legend()
+
+        title(self.name)
+        return fig
