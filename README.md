@@ -26,7 +26,7 @@ model.run(time = 10, Np = 1000)
 model.plot()
 ```
 
-![alt text](https://i.imgur.com/OppaEWp.png)
+![ABCmodel](https://user-images.githubusercontent.com/63464503/128603547-cea700e3-00f6-4c6f-9b8b-5c22629b7ca6.png)
 
 
 ## Example 2: Radiation 
