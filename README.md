@@ -33,29 +33,29 @@ model.plot()
 ```python
 from pyKinetics import *
 
-A = Entity(250, name="Blood")
-B = Entity(0, name="Thyroid")
-C = Entity(0, name="Rest of Body")
-D = Entity(0, name="Bladder")
-E = Entity(0, name="Large Intestine")
+blood   = Entity(250, name="Bloodstream")
+thyroid = Entity(0, name="Thyroid")
+rest    = Entity(0, name="Rest of Body")
+bladder = Entity(0, name="Bladder")
+large_intestine = Entity(0, name="Large Intestine")
 
-A.connect(B, 0.035)
-A.connect(C, 0.08)
+blood.connect(thyroid, 0.035)
+blood.connect(rest, 0.08)
 
-B.connect(D, 3.61E-4)
-D.connect(E, 4.81E-4)
-D.connect(A, 1.93E-3)
+thyroid.connect(bladder, 3.61E-4)
+bladder.connect(large_intestine, 4.81E-4)
+bladder.connect(blood, 1.93E-3)
 
-model = Model(A, B, C, D, E, name = "Radio-isotope model")
+excretory_system = Model(blood, thyroid, rest, bladder, large_intestine, name = "Radio-isotope model")
 
 
 #model.introduce_decay(3.6E-3)
-model.introduce_decay(3.6E-3)
-model.introduce_exit(C, 0.058)
-model.introduce_exit(E, 0.029)
+excretory_system.introduce_decay(3.6E-3)
+excretory_system.introduce_exit(rest, 0.058)
+excretory_system.introduce_exit(large_intestine, 0.029)
 
-model.run(200)
-model.plot()
+excretory_system.run(200)
+excretory_system.plot()
 ```
 
 
