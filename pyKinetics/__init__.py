@@ -5,5 +5,5 @@ Created on Sat Dec 12 15:28:57 2020
 @author: Rui Campos
 """
 
-from pyKinetics.pyKinetics import Compartimento
-from pyKinetics.pyKinetics import Model
+from . import Entity
+from . import Model
