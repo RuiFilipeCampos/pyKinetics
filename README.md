@@ -2,6 +2,8 @@
 
 Create and simulate any biokinetic model.
 
+This is a side project I'm doing for fun. 
+
 ```
 pip install pyKinetics
 ```
