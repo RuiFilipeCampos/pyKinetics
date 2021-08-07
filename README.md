@@ -30,6 +30,9 @@ model.plot()
 
 ## Example 2: Radiation 
 
+![modelo_iodo](https://user-images.githubusercontent.com/63464503/128603978-1abc524b-ce1b-4c83-bc23-6ae0bf7d729f.png)
+
+
 ```python
 from pyKinetics import *
 
@@ -57,6 +60,8 @@ excretory_system.introduce_exit(large_intestine, 0.029)
 excretory_system.run(200)
 excretory_system.plot()
 ```
+
+![radioactivity_model](https://user-images.githubusercontent.com/63464503/128603962-49618e52-49cf-4f8e-9adf-f187074126b4.png)
 
 
 ## Example 3: Covid 19 Simulation 
